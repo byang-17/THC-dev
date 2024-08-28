@@ -1,4 +1,4 @@
-from db_manager import *
+from utils.db_manager import *
 class data_loader:
     
     def __init__(self, db_manager, asset: str, start_date, end_date, freq: str):
@@ -33,6 +33,27 @@ class data_loader:
         return(result)
         
 
+    def load_credit_data(self, tickers = None):
 
+        table_name = f"`{self.db_manager.project_id}.ETFs.XCB`"
+        
+        # Base query
+        db_query = f"""
+                    SELECT * FROM {table_name}
+                    WHERE date BETWEEN @start_date AND @end_date
+                   """
+                   
+        query_params = [
+            bigquery.ScalarQueryParameter("start_date", "DATE", self.start_date),
+            bigquery.ScalarQueryParameter("end_date", "DATE", self.end_date)
+        ]        
+        
+        if tickers:
+            db_query += " AND Ticker IN UNNEST(@tickers)"
+            query_params.append(bigquery.ArrayQueryParameter("tickers", "STRING", tickers))
+        
+        job_config = bigquery.QueryJobConfig(query_parameters = query_params)
+        result = self.db_manager.query(db_query, job_config)
+        return(result)
         
 

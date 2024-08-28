@@ -7,15 +7,33 @@ def FI_indexing(request):
     # YAML file to context
     # 
     request_args = request.get_json(silent=True)
+    
+    # 1. load data
     db_mana = db_manager(project_id = "analytics-lakehouse-428212")
     dt_loader = data_loader(db_mana, 
-                            asset = "eq",
-                            start_date = '2024-07-01',
-                            end_date = '2024-07-01',
+                            asset = "credit",
+                            start_date = '2024-07-18',
+                            end_date = '2024-07-18',
                             freq = "daily")
-    index_data = dt_loader.load_equity_data()
-    index_data = jsonify(index_data)
+    index_data = dt_loader.load_credit_data()
+
+
+    # 2. compute signals
+
+
+
+    # 3. compute factors
+
+
+
+    # 4. 
+    
+    
+    index_data = jsonify(index_data)    
     return(index_data)
+
+
+
 
 """
 need to write - 
