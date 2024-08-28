@@ -1,0 +1,51 @@
+account: 'NoelleCorum'
+signals:     
+  value:
+    function: 'get_credit_value_signal'
+    params:
+      control_factors: ['Sector', 'Rating']
+      sec_id: ['Cusip', 'ISIN']
+  lowvol:
+    function: 'get_credit_lowvol_signal'
+    params:
+      control_factors: []
+      sec_id: ['Cusip', 'ISIN']
+factors:
+  value:
+    signal: 'value'
+    function: 'get_factor_trade'
+    params:
+      sec_id: ['Cusip', 'ISIN']
+      #filters: {'key': 0.05}
+      control_factors: ['DTS_Bucket']
+      trade_dir: 'lo'
+      long_pct: [0.75, 0.95]
+      short_pct: [0, 0]
+      weighting_scheme: 'mv'
+      norm_factors: ['Sector']
+      rebalance_freq: 'monthly'
+      holding_period: 1
+      trade_lag: 1
+  lowvol:
+    signal: 'lowvol'
+    function: 'get_factor_trade'
+    params:
+      sec_id: ['Cusip', 'ISIN']
+      filters: {'Signal': -10}
+      control_factors: ['Sector']
+      trade_dir: 'lo'
+      long_pct: [0.8, 1]
+      short_pct: [0, 0]
+      weighting_scheme: 'mv'
+      norm_factors: ['Sector']
+      rebalance_freq: 'monthly'
+      holding_period: 1
+      trade_lag: 1
+multifactor:
+  factors: ['value', 'lowvol']
+  factor_weights: [0.5, 0.5]
+portfolio:
+  constr_params: [{'group_by': 'Sector', 'limit': 0.02, 'rel_to' : 'Market_Value_Percent'},
+                  {'group_by': 'Rating', 'limit': 0.02, 'rel_to' : 'Market_Value_Percent'}, 
+                  {'metric' : 'Dur', 'limit': 0.5, 'rel_to' : 'Market_Value_Percent'}]
+    

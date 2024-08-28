@@ -14,7 +14,7 @@ class db_manager:
                 Defaults to None, which uses the default application credentials.
         """
         self.project_id = project_id
-        self.client = bigquery.Client.from_service_account_json(credentials_path) if credentials_path else bigquery.Client()
+        self.client = bigquery.Client.from_service_account_json(credentials_path) if credentials_path else bigquery.Client(project=project_id)
 
     def query(self, query: str, job_config: None) -> list:
         """
